@@ -2,7 +2,7 @@
 
 @for (p of produtos; track p.id) {
   <p>
-    {{ p.nome }} - {{ p.quantidade }} unidades
+    {{ p.nome }} - R$ {{ p.preco }} - {{ p.quantidade }} unidades
     @if (p.estoqueBaixo) {
       <span>⚠️ Estoque baixo</span>
     }
@@ -11,28 +11,20 @@
 
 <h2>Cadastrar Produtos</h2>
 
-<form (submit)="criarProduto()">
-  <input 
-    type="text"
-    placeholder="Nome"
-    [(ngModel)]="novoProduto.nome"
-    name="nome"
-  />
+<form [formGroup]="produtoForm" (ngSubmit)="criarProduto()">
+  <input type="text" placeholder="Nome do produto" formControlName="nome" />
 
-  <input 
-    type="number"
-    placeholder="Quantidade"
-    [(ngModel)]="novoProduto.quantidade"
-    name="quantidade"
-  />
+  <input type="number" placeholder="Quantidade" formControlName="quantidade" />
 
-  <input 
+  <input
     type="number"
     placeholder="Preço"
-    [(ngModel)]="novoProduto.preco"
-    name="preco"
+    formControlName="preco"
     step="0.01"
   />
 
-  <button type="submit">Cadastrar</button>
+  <button type="submit" [disabled]="produtoForm.invalid">Criar Produto</button>
+  @if (produtoForm.get("nome")?.invalid && produtoForm.get("nome")?.touched) {
+    <div>Nome é obrigatório</div>
+  }
 </form>

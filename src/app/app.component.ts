@@ -1,25 +1,35 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+  FormGroup,
+} from '@angular/forms';
 import { ProdutoService, Produto } from './services/produto.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
   produtos: Produto[] = [];
 
-  novoProduto = {
-    nome: '',
-    quantidade: 0,
-    preco: 0,
-  };
+  produtoForm!: FormGroup;
 
-  constructor(private produtoService: ProdutoService) {}
+  constructor(
+    private produtoService: ProdutoService,
+    private fb: FormBuilder,
+  ) {}
 
   ngOnInit() {
+    this.produtoForm = this.fb.group({
+      nome: ['', Validators.required],
+      quantidade: [null, [Validators.required, Validators.min(1)]],
+      preco: [null, [Validators.required, Validators.min(0.01)]],
+    });
+
     this.carregarProdutos();
   }
 
@@ -30,10 +40,12 @@ export class AppComponent implements OnInit {
   }
 
   criarProduto() {
-    this.produtoService.criarProduto(this.novoProduto).subscribe({
+    if (this.produtoForm.invalid) return;
+
+    this.produtoService.criarProduto(this.produtoForm.value).subscribe({
       next: () => {
         this.carregarProdutos();
-        this.novoProduto = { nome: '', quantidade: 0, preco: 0 };
+        this.produtoForm.reset();
       },
       error: (err) => alert(err.error),
     });
