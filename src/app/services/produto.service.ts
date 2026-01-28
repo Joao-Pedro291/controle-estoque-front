@@ -25,4 +25,8 @@ export class ProdutoService {
   criarProduto(produto: any) {
     return this.http.post(this.apiUrl, produto);
   }
+
+  atualizarProduto(id: number, produto: any) {
+    return this.http.put(`${this.apiUrl}/${id}`, produto);
+  }
 }

@@ -6,11 +6,12 @@ import {
   FormGroup,
 } from '@angular/forms';
 import { ProdutoService, Produto } from './services/produto.service';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CurrencyPipe],
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
@@ -18,10 +19,18 @@ export class AppComponent implements OnInit {
 
   produtoForm!: FormGroup;
 
+  produtoEditandoId: number | null = null;
+
   constructor(
     private produtoService: ProdutoService,
     private fb: FormBuilder,
   ) {}
+
+  resetarFormulario() {
+    this.produtoForm.reset();
+    this.produtoEditandoId = null;
+    this.carregarProdutos();
+  }
 
   ngOnInit() {
     this.produtoForm = this.fb.group({
@@ -42,12 +51,30 @@ export class AppComponent implements OnInit {
   criarProduto() {
     if (this.produtoForm.invalid) return;
 
-    this.produtoService.criarProduto(this.produtoForm.value).subscribe({
-      next: () => {
-        this.carregarProdutos();
-        this.produtoForm.reset();
-      },
-      error: (err) => alert(err.error),
+    const dados = this.produtoForm.value;
+
+    if (this.produtoEditandoId) {
+      // PUT
+      this.produtoService
+        .atualizarProduto(this.produtoEditandoId, dados)
+        .subscribe(() => {
+          this.resetarFormulario();
+        });
+    } else {
+      // POST
+      this.produtoService.criarProduto(dados).subscribe(() => {
+        this.resetarFormulario();
+      });
+    }
+  }
+
+  editarProduto(produto: Produto) {
+    this.produtoEditandoId = produto.id;
+
+    this.produtoForm.patchValue({
+      nome: produto.nome,
+      quantidade: produto.quantidade,
+      preco: produto.preco,
     });
   }
 }

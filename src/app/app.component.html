@@ -2,10 +2,12 @@
 
 @for (p of produtos; track p.id) {
   <p>
-    {{ p.nome }} - R$ {{ p.preco }} - {{ p.quantidade }} unidades
+    {{ p.nome }} - R$ {{ p.preco | currency: "BRL" : "symbol" : "1.2-2" }} -
+    {{ p.quantidade }} unidades
     @if (p.estoqueBaixo) {
       <span>⚠️ Estoque baixo</span>
     }
+    <button (click)="editarProduto(p)">Editar</button>
   </p>
 }
 
@@ -15,6 +17,12 @@
   <input type="text" placeholder="Nome do produto" formControlName="nome" />
 
   <input type="number" placeholder="Quantidade" formControlName="quantidade" />
+  @if (
+    produtoForm.get("quantidade")?.invalid &&
+    produtoForm.get("quantidade")?.touched
+  ) {
+    <div>Quantidade deve ser maior que zero!</div>
+  }
 
   <input
     type="number"
@@ -22,9 +30,15 @@
     formControlName="preco"
     step="0.01"
   />
-
-  <button type="submit" [disabled]="produtoForm.invalid">Criar Produto</button>
-  @if (produtoForm.get("nome")?.invalid && produtoForm.get("nome")?.touched) {
-    <div>Nome é obrigatório</div>
+  @if (produtoForm.get("preco")?.invalid && produtoForm.get("preco")?.touched) {
+    <div>Preço deve ser maior que R$ 0.01</div>
   }
+
+  <button type="submit" [disabled]="produtoForm.invalid">
+    @if (produtoEditandoId) {
+      Atualizar Produtos
+    } @else {
+      Criar Produto
+    }
+  </button>
 </form>
