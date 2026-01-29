@@ -13,6 +13,7 @@ import { CurrencyPipe } from '@angular/common';
   standalone: true,
   imports: [ReactiveFormsModule, CurrencyPipe],
   templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
   produtos: Produto[] = [];
@@ -75,6 +76,25 @@ export class AppComponent implements OnInit {
       nome: produto.nome,
       quantidade: produto.quantidade,
       preco: produto.preco,
+    });
+  }
+
+  excluirProduto(id: number): void {
+    const confirmar = confirm('Tem certeza que deseja excluir este produto?');
+
+    if (!confirmar) {
+      return;
+    }
+
+    this.produtoService.deletarProduto(id).subscribe({
+      next: () => {
+        alert('Produto excluído com sucesso!');
+        this.carregarProdutos();
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Erro ao excluir produto');
+      },
     });
   }
 }

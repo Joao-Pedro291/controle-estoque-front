@@ -29,4 +29,8 @@ export class ProdutoService {
   atualizarProduto(id: number, produto: any) {
     return this.http.put(`${this.apiUrl}/${id}`, produto);
   }
+
+  deletarProduto(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

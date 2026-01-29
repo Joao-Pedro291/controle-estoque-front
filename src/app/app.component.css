@@ -1,0 +1,97 @@
+.titulo {
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.lista-produtos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.produto-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #f5f5f5;
+  border-left: 6px solid transparent;
+}
+
+.produto-card.estoque-baixo {
+  border-left-color: #e53935;
+  background: #fff3f3;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.preco {
+  font-weight: bold;
+}
+
+.quantidade {
+  font-size: 14px;
+  color: #555;
+}
+
+.alerta {
+  color: #e53935;
+  font-weight: bold;
+}
+
+.acoes {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn.editar {
+  background: #1976d2;
+  color: white;
+}
+
+.btn.excluir {
+  background: #d32f2f;
+  color: white;
+}
+
+.btn.salvar {
+  background: #2e7d32;
+  color: white;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-produto {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 320px;
+}
+
+input {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.erro {
+  color: #d32f2f;
+  font-size: 12px;
+}

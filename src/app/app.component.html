@@ -1,27 +1,48 @@
-<h2>Produtos</h2>
+<h2 class="titulo">Produtos</h2>
 
-@for (p of produtos; track p.id) {
-  <p>
-    {{ p.nome }} - R$ {{ p.preco | currency: "BRL" : "symbol" : "1.2-2" }} -
-    {{ p.quantidade }} unidades
-    @if (p.estoqueBaixo) {
-      <span>⚠️ Estoque baixo</span>
-    }
-    <button (click)="editarProduto(p)">Editar</button>
-  </p>
-}
+<div class="lista-produtos">
+  @for (p of produtos; track p.id) {
+    <div class="produto-card" [class.estoque-baixo]="p.estoqueBaixo">
+      <div class="info">
+        <strong>{{ p.nome }}</strong>
+        <span class="preco">
+          {{ p.preco | currency: "BRL" : "symbol" : "1.2-2" }}
+        </span>
+        <span class="quantidade"> {{ p.quantidade }} unidades </span>
 
-<h2>Cadastrar Produtos</h2>
+        @if (p.estoqueBaixo) {
+          <span class="alerta">⚠ Estoque baixo</span>
+        }
+      </div>
 
-<form [formGroup]="produtoForm" (ngSubmit)="criarProduto()">
+      <div class="acoes">
+        <button class="btn editar" (click)="editarProduto(p)">Editar</button>
+        <button class="btn excluir" (click)="excluirProduto(p.id)">
+          Excluir
+        </button>
+      </div>
+    </div>
+  }
+</div>
+
+<h2 class="titulo">Cadastrar Produtos</h2>
+
+<form
+  class="form-produto"
+  [formGroup]="produtoForm"
+  (ngSubmit)="criarProduto()"
+>
   <input type="text" placeholder="Nome do produto" formControlName="nome" />
+  @if (produtoForm.get("nome")?.invalid && produtoForm.get("nome")?.touched) {
+    <small class="erro">Nome não pode ser vazio</small>
+  }
 
   <input type="number" placeholder="Quantidade" formControlName="quantidade" />
   @if (
     produtoForm.get("quantidade")?.invalid &&
     produtoForm.get("quantidade")?.touched
   ) {
-    <div>Quantidade deve ser maior que zero!</div>
+    <small class="erro">Quantidade deve ser maior que zero</small>
   }
 
   <input
@@ -31,10 +52,10 @@
     step="0.01"
   />
   @if (produtoForm.get("preco")?.invalid && produtoForm.get("preco")?.touched) {
-    <div>Preço deve ser maior que R$ 0.01</div>
+    <small class="erro">Preço deve ser maior que R$ 0,01</small>
   }
 
-  <button type="submit" [disabled]="produtoForm.invalid">
+  <button class="btn salvar" type="submit" [disabled]="produtoForm.invalid">
     @if (produtoEditandoId) {
       Atualizar Produtos
     } @else {
